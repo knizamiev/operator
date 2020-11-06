@@ -4,12 +4,15 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class ParcerCsv {
-    public List<Phone> reader()  {
+    public Map<Integer, List<Phone>> reader()  {
         BufferedReader reader = null;
         List<Phone> list = new ArrayList<>();
+        Map<Integer, List<Phone>> map;
         try {
             String line = "";
             reader = new BufferedReader(new FileReader("DEF-9xx.csv"));
@@ -19,7 +22,7 @@ public class ParcerCsv {
                 String[] fields = line.split(";");
                 if (fields.length > 0){
                     Phone phone = new Phone();
-                    phone.setCode(Short.parseShort(fields[0]));
+                    phone.setCode(Integer.parseInt(fields[0]));
                     phone.setFrom(Integer.parseInt(fields[1]));
                     phone.setBefore(Integer.parseInt(fields[2]));
                     phone.setCount(Integer.parseInt(fields[3]));
@@ -38,6 +41,7 @@ public class ParcerCsv {
                 e.printStackTrace();
             }
         }
-        return list;
+        map = list.stream().collect(groupingBy(Phone::getCode));
+        return map;
     }
 }

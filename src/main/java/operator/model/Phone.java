@@ -1,14 +1,14 @@
 package operator.model;
 
 public class Phone {
-    private short code;
+    private int code;
     private int from;
     private int before;
     private int count;
     private String operator;
     private String region;
 
-    public void setCode(short code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
@@ -32,7 +32,7 @@ public class Phone {
         this.region = region;
     }
 
-    public short getCode() {
+    public int getCode() {
         return code;
     }
 
