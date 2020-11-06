@@ -1,4 +1,4 @@
-package operatorApplication.model;
+package operator.model;
 
 public class Phone {
     private short code;

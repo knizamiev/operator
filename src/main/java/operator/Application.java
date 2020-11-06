@@ -1,4 +1,4 @@
-package operatorApplication;
+package operator;
 
 
 import org.springframework.boot.SpringApplication;

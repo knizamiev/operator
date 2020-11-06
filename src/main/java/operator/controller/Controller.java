@@ -1,5 +1,7 @@
-package operatorApplication.restservice;
-import operatorApplication.model.Phone;
+package operator.controller;
+import operator.model.Phone;
+import operator.util.ParcerCsv;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,20 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @RestController
-public class GreetingController {
-
+public class Controller {
     private ParcerCsv parcerCsv = new ParcerCsv();
-
-    //only digit, count 11
-    private Pattern pattern = Pattern.compile("^\\d{11}$");
+    private Pattern pattern = Pattern.compile("^\\d{11}$"); //only digit, count 11
     private List<Phone> listPhones = parcerCsv.reader();
 
     @RequestMapping("/operator")
     @ResponseBody
-    public ResponseEntity sendViaResponseEntity (@RequestParam("phone") String phone) {
-
+    public ResponseEntity getOperatot (@RequestParam("phone") String phone) {
         Matcher matcher = pattern.matcher(phone);
         boolean flag = matcher.find();
         if (flag){
@@ -35,21 +34,18 @@ public class GreetingController {
                 other = other + "" +  chars[i];
             }
 
-            List<Phone> result = new ArrayList<>();
-            for (Phone phone1: listPhones) {
-                if (phone1.getCode() == Short.parseShort(code)){
-                    result.add(phone1);
-                }
-            }
+            String finalOther = other;
+            List<Phone> result = listPhones.stream()
+            .filter(line -> line.getCode() == Short.parseShort(code))
+            .collect(Collectors.toList()).stream().filter(line -> Integer.parseInt(finalOther) >= line.getFrom()
+            && Integer.parseInt(finalOther) <= line.getBefore()).collect(Collectors.toList());
 
-            Phone responseBody = new Phone();
-            for (Phone resultPhone : result){
-                if (Integer.parseInt(other) >= resultPhone.getFrom() && Integer.parseInt(other) <= resultPhone.getBefore()){
-                    responseBody = resultPhone;
-                }
-            }
-            //responseBody.getOperator() || responseBody
-            return ResponseEntity.ok(responseBody.getOperator());
+            System.out.println(result.size());
+
+            Phone body = result.get(0);
+
+            //result.get(0).getOperator() || result.get
+            return ResponseEntity.ok(body);
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not valid phone number");
         }

@@ -1,5 +1,5 @@
-package operatorApplication.restservice;
-import operatorApplication.model.Phone;
+package operator.util;
+import operator.model.Phone;
 import org.springframework.stereotype.Service;
 import java.io.*;
 import java.util.ArrayList;
